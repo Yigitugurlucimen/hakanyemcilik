@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import Seo from "../components/Seo";
-import { campaigns } from "../data/campaigns";
+import { useCampaigns } from "../hooks/useCampaigns";
 
 const CampaignsPage = () => {
+  const campaigns = useCampaigns();
+
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">
       <Seo

@@ -1,7 +1,10 @@
+import { FiShoppingCart } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext.jsx";
 
 const navLinks = [
   { label: "Urunler", href: "/#bilgi-bankasi" },
+  { label: "Sepet", to: "/sepet" },
   { label: "Kampanyalar", to: "/kampanyalar" },
   { label: "Blog", to: "/blog" },
   { label: "Iletisim", href: "/#iletisim" },
@@ -10,6 +13,7 @@ const navLinks = [
 ];
 
 const Header = () => {
+  const { totalItems } = useCart();
   const orderLineUrl = "https://wa.me/905325506871";
 
   return (
@@ -32,14 +36,29 @@ const Header = () => {
             </div>
           </Link>
 
-          <a
-            href={orderLineUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-full bg-pistachio px-5 py-2 text-sm font-semibold text-white transition hover:brightness-95"
-          >
-            Siparis Hatti
-          </a>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/sepet"
+              className="relative inline-flex items-center gap-2 rounded-full border border-emeraldDark/20 px-4 py-2 text-sm font-semibold text-emeraldDark transition hover:bg-emeraldDark/5"
+              aria-label="Sepet"
+            >
+              <FiShoppingCart size={18} />
+              Sepet
+              {totalItems > 0 ? (
+                <span className="absolute -right-1 -top-1 grid h-5 min-w-[1.25rem] place-content-center rounded-full bg-pistachio px-1 text-[10px] font-bold text-white">
+                  {totalItems > 99 ? "99+" : totalItems}
+                </span>
+              ) : null}
+            </Link>
+            <a
+              href={orderLineUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full bg-pistachio px-5 py-2 text-sm font-semibold text-white transition hover:brightness-95"
+            >
+              Siparis Hatti
+            </a>
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">

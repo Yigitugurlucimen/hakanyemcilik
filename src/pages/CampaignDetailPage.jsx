@@ -1,11 +1,12 @@
 import { Link, useParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import Seo from "../components/Seo";
-import { getBlogsByCampaign, getCampaignBySlug } from "../data/campaigns";
+import { getBlogsByCampaign } from "../data/campaigns";
+import { useCampaign } from "../hooks/useCampaigns";
 
 const CampaignDetailPage = () => {
   const { slug } = useParams();
-  const campaign = getCampaignBySlug(slug);
+  const campaign = useCampaign(slug);
 
   if (!campaign) {
     return (

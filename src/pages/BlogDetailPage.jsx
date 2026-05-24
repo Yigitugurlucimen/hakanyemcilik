@@ -1,16 +1,14 @@
 import { Link, useParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import Seo from "../components/Seo";
-import {
-  blogPosts,
-  campaigns,
-  getBlogBySlug,
-  getCampaignBySlug
-} from "../data/campaigns";
+import { blogPosts, getBlogBySlug } from "../data/campaigns";
+import { useCampaign, useCampaigns } from "../hooks/useCampaigns";
 
 const BlogDetailPage = () => {
   const { slug } = useParams();
   const post = getBlogBySlug(slug);
+  const campaigns = useCampaigns();
+  const campaign = useCampaign(post?.campaignSlug);
 
   if (!post) {
     return (
@@ -31,7 +29,6 @@ const BlogDetailPage = () => {
     );
   }
 
-  const campaign = getCampaignBySlug(post.campaignSlug);
   const relatedPosts = blogPosts.filter(
     (item) => item.slug !== post.slug && item.campaignSlug === post.campaignSlug
   );

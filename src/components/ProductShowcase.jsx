@@ -1,10 +1,6 @@
 import { useMemo, useState } from "react";
+import { useProducts } from "../context/ProductsContext";
 import ProductCard from "./ProductCard";
-import {
-  enrichedProducts,
-  productBrands,
-  productCategories
-} from "../data/productUtils";
 
 const quickFilters = [
   { id: "all", label: "Tüm Ürünler" },
@@ -15,13 +11,14 @@ const quickFilters = [
 ];
 
 const ProductShowcase = () => {
+  const { products, productBrands, productCategories, loading } = useProducts();
   const [searchText, setSearchText] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [activeBrand, setActiveBrand] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
 
   const filteredProducts = useMemo(() => {
-    return enrichedProducts.filter((product) => {
+    return products.filter((product) => {
       const normalizedSearch = searchText.trim().toLocaleLowerCase("tr-TR");
       const searchMatch =
         normalizedSearch.length === 0 ||
@@ -46,7 +43,15 @@ const ProductShowcase = () => {
 
       return searchMatch && filterMatch && brandMatch && categoryMatch;
     });
-  }, [activeBrand, activeCategory, activeFilter, searchText]);
+  }, [activeBrand, activeCategory, activeFilter, products, searchText]);
+
+  if (loading) {
+    return (
+      <section id="bilgi-bankasi" className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">
+        <p className="text-sm text-gray-600">Urunler yukleniyor...</p>
+      </section>
+    );
+  }
 
   return (
     <section id="bilgi-bankasi" className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">

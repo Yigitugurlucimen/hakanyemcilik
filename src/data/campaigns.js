@@ -1,5 +1,3 @@
-import { enrichedProducts } from "./productUtils";
-
 const campaignDefinitions = [
   {
     slug: "performans-seti",
@@ -83,19 +81,20 @@ const campaignDefinitions = [
   }
 ];
 
-export const campaigns = campaignDefinitions.map((campaign) => {
-  const campaignProducts = campaign.productSlugs
-    .map((slug) => enrichedProducts.find((product) => product.slug === slug))
-    .filter(Boolean);
+export const buildCampaigns = (catalog = []) =>
+  campaignDefinitions.map((campaign) => {
+    const campaignProducts = campaign.productSlugs
+      .map((slug) => catalog.find((product) => product.slug === slug))
+      .filter(Boolean);
 
-  return {
-    ...campaign,
-    products: campaignProducts
-  };
-});
+    return {
+      ...campaign,
+      products: campaignProducts
+    };
+  });
 
-export const getCampaignBySlug = (slug) =>
-  campaigns.find((campaign) => campaign.slug === slug);
+export const getCampaignBySlug = (slug, catalog = []) =>
+  buildCampaigns(catalog).find((campaign) => campaign.slug === slug);
 
 export const blogPosts = [
   {

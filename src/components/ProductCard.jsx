@@ -1,7 +1,9 @@
 import { FiMessageCircle } from "react-icons/fi";
 import { HiOutlineQrCode } from "react-icons/hi2";
 import { Link } from "react-router-dom";
-import { whatsappNumber } from "../data/products";
+import AddToCartButton from "./AddToCartButton.jsx";
+import PriceTag from "./PriceTag.jsx";
+import { whatsappNumber } from "../data/products.js";
 
 const ProductCard = ({ product }) => {
   const requestUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
@@ -38,7 +40,10 @@ const ProductCard = ({ product }) => {
         </span>
       </div>
 
-      <h3 className="mb-3 text-xl font-extrabold text-emeraldDark">{product.name}</h3>
+      <h3 className="mb-2 text-xl font-extrabold text-emeraldDark">{product.name}</h3>
+      <div className="mb-3">
+        <PriceTag price={product.price} />
+      </div>
       <div className="mb-3 flex flex-wrap gap-2">
         <p className="rounded-full bg-emeraldDark/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emeraldDark/80">
           Marka: {product.brand || "Belirtilmedi"}
@@ -56,22 +61,25 @@ const ProductCard = ({ product }) => {
         {product.dosage}
       </p>
 
-      <div className="mt-auto flex items-center justify-between gap-3">
-        <Link
-          to={`/urun/${product.slug}`}
-          className="inline-flex w-fit items-center rounded-full border border-emeraldDark/20 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-emeraldDark"
-        >
-          Detaya Git
-        </Link>
-        <a
-          href={requestUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex w-fit items-center gap-2 rounded-full bg-pistachio px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm"
-        >
-          <FiMessageCircle size={14} />
-          Hemen Sipariş
-        </a>
+      <div className="mt-auto space-y-3">
+        <AddToCartButton product={product} className="w-full" />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Link
+            to={`/urun/${product.slug}`}
+            className="inline-flex w-fit items-center rounded-full border border-emeraldDark/20 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-emeraldDark"
+          >
+            Detaya Git
+          </Link>
+          <a
+            href={requestUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex w-fit items-center gap-2 rounded-full bg-pistachio px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm"
+          >
+            <FiMessageCircle size={14} />
+            Sor / Siparis
+          </a>
+        </div>
       </div>
     </article>
   );

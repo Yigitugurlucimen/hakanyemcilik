@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { campaigns } from "../data/campaigns";
+import { useCampaigns } from "../hooks/useCampaigns";
 
 const CampaignShowcase = () => {
+  const campaigns = useCampaigns();
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">
       <div className="mb-8 flex items-end justify-between gap-4">

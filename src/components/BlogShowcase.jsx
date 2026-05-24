@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
-import { blogPosts, campaigns } from "../data/campaigns";
-
-const campaignNameBySlug = Object.fromEntries(
-  campaigns.map((campaign) => [campaign.slug, campaign.name])
-);
+import { blogPosts } from "../data/campaigns";
+import { useCampaigns } from "../hooks/useCampaigns";
 
 const BlogShowcase = () => {
+  const campaigns = useCampaigns();
+  const campaignNameBySlug = Object.fromEntries(
+    campaigns.map((campaign) => [campaign.slug, campaign.name])
+  );
+
   return (
     <section className="bg-emeraldDark/5 py-14">
       <div className="mx-auto w-full max-w-6xl px-4 md:px-6">

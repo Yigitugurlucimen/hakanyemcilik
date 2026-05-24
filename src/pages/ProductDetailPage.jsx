@@ -1,12 +1,22 @@
 import { Link, useParams } from "react-router-dom";
+import AddToCartButton from "../components/AddToCartButton.jsx";
+import PriceTag from "../components/PriceTag.jsx";
 import ProductCard from "../components/ProductCard";
 import Seo from "../components/Seo";
-import { whatsappNumber } from "../data/products";
-import { enrichedProducts } from "../data/productUtils";
+import { useProducts } from "../context/ProductsContext";
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
-  const product = enrichedProducts.find((item) => item.slug === slug);
+  const { products, whatsappNumber, loading, getProductBySlug } = useProducts();
+  const product = getProductBySlug(slug);
+
+  if (loading) {
+    return (
+      <section className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">
+        <p className="text-sm text-gray-600">Urun yukleniyor...</p>
+      </section>
+    );
+  }
 
   if (!product) {
     return (
@@ -33,7 +43,7 @@ const ProductDetailPage = () => {
   const requestUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
     `Merhaba, ${product.name} ürünü için detaylı bilgi almak istiyorum.`
   )}`;
-  const relatedProducts = enrichedProducts
+  const relatedProducts = products
     .filter(
       (item) =>
         item.slug !== product.slug &&
@@ -75,6 +85,13 @@ const ProductDetailPage = () => {
         <h1 className="mt-3 text-3xl font-black text-emeraldDark md:text-4xl">
           {product.name}
         </h1>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <PriceTag price={product.price} size="lg" />
+          <span className="rounded-full bg-emeraldDark/5 px-3 py-1 text-xs font-semibold uppercase text-emeraldDark">
+            {product.stock}
+          </span>
+        </div>
 
         <div className="mt-6 rounded-2xl border border-emeraldDark/10 bg-gradient-to-br from-slate-50 to-emeraldDark/10 p-4">
           {product.image ? (
@@ -121,21 +138,30 @@ const ProductDetailPage = () => {
           </p>
         </div>
 
-        <div className="mt-7 flex flex-wrap items-center gap-3">
-          <a
-            href={requestUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex rounded-full bg-pistachio px-5 py-2 text-sm font-semibold text-white"
-          >
-            WhatsApp&apos;tan Sor
-          </a>
-          <a
-            href="/#bilgi-bankasi"
-            className="inline-flex rounded-full border border-emeraldDark/20 px-5 py-2 text-sm font-semibold text-emeraldDark"
-          >
-            Diger urunleri incele
-          </a>
+        <div className="mt-7 space-y-4">
+          <AddToCartButton product={product} showQuantity label="Sepete Ekle" />
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              to="/sepet"
+              className="inline-flex rounded-full border border-emeraldDark/20 px-5 py-2 text-sm font-semibold text-emeraldDark"
+            >
+              Sepete Git
+            </Link>
+            <a
+              href={requestUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex rounded-full bg-pistachio px-5 py-2 text-sm font-semibold text-white"
+            >
+              WhatsApp&apos;tan Sor
+            </a>
+            <a
+              href="/#bilgi-bankasi"
+              className="inline-flex rounded-full border border-emeraldDark/20 px-5 py-2 text-sm font-semibold text-emeraldDark"
+            >
+              Diger urunleri incele
+            </a>
+          </div>
         </div>
       </article>
 
