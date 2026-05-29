@@ -16,7 +16,7 @@ const buildStaticCatalog = () =>
         imageUrl: productImageBySlug[product.slug] || "",
         isActive: true,
         sortOrder: 0,
-        price: null
+        price: product.price ?? null
       })
     )
     .sort((a, b) => a.name.localeCompare(b.name, "tr"));

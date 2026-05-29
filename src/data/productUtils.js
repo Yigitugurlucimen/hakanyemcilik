@@ -10,7 +10,7 @@ export const enrichedProducts = products.map((product) =>
     imageUrl: productImageBySlug[product.slug] || "",
     isActive: true,
     sortOrder: 0,
-    price: null
+    price: product.price ?? null
   })
 );
 
