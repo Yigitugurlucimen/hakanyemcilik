@@ -138,6 +138,16 @@ const productImageSources = {
   "vitaturka-elektrolit": ["vitaturka", "whatsapp-image-2026-03-08-at-21-38-57-3.jpeg"]
 };
 
+const PUBLISH_BASE = (
+  process.env.VITE_PRODUCT_IMAGE_BASE || "https://yigitugurlucimen.github.io/hakanyemcilik"
+).replace(/\/$/, "");
+
+const toPublishedUrl = (path) => {
+  if (!path || /^https?:\/\//i.test(path)) return path;
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return `${PUBLISH_BASE}${normalized}`;
+};
+
 const { products } = await import(
   new URL("../src/data/products.js", import.meta.url).href
 );
@@ -157,7 +167,7 @@ for (const product of products) {
   }
 
   if (mapping.external) {
-    productImageBySlug[product.slug] = mapping.external;
+    productImageBySlug[product.slug] = toPublishedUrl(mapping.external);
     continue;
   }
 
@@ -173,7 +183,9 @@ for (const product of products) {
   const destFile = `${product.slug}${ext}`;
   const destPath = join(outputRoot, destFile);
   copyFileSync(sourcePath, destPath);
-  productImageBySlug[product.slug] = `/product-images/by-slug/${destFile}`;
+  productImageBySlug[product.slug] = toPublishedUrl(
+    `/product-images/by-slug/${destFile}`
+  );
 }
 
 writeFileSync(

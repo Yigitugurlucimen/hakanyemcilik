@@ -1,12 +1,11 @@
-import { assetUrl } from "./appBase.js";
 import { productImageBySlug } from "../data/productImages.js";
+import { toPublishedImageUrl } from "./productImageBase.js";
 
-/** Relative paths must respect Vite base (./ or /hakanyemcilik/). */
+/** Relative paths → GitHub Pages CDN (custom domain SPA sorununu asar). */
 export const resolveProductImage = (imageUrl, slug) => {
   const raw = imageUrl || productImageBySlug[slug] || "";
   if (!raw) return null;
-  if (/^https?:\/\//i.test(raw)) return raw;
-  return assetUrl(raw);
+  return toPublishedImageUrl(raw);
 };
 
 export const parseBrandFromName = (name) => {
