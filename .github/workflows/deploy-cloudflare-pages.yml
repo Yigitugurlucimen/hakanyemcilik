@@ -1,0 +1,61 @@
+# hakanyemcilik.com Cloudflare uzerinden yayinlaniyorsa her push bu projeyi gunceller.
+# Gerekli GitHub Secrets: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID
+# Opsiyonel: CLOUDFLARE_PAGES_PROJECT (varsayilan: hakanyemcilik)
+
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: cloudflare-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check Cloudflare secrets
+        id: cf
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] || [ -z "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Cloudflare secrets yok. Repo Settings > Secrets > Actions icinde CLOUDFLARE_API_TOKEN ve CLOUDFLARE_ACCOUNT_ID ekleyin. Bkz. .github/DEPLOY-CLOUDFLARE.md"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node.js
+        if: steps.cf.outputs.configured == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        if: steps.cf.outputs.configured == 'true'
+        run: npm ci
+
+      - name: Build
+        if: steps.cf.outputs.configured == 'true'
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: npm run build
+
+      - name: Add SPA fallback
+        if: steps.cf.outputs.configured == 'true'
+        run: cp dist/index.html dist/404.html
+
+      - name: Deploy to Cloudflare Pages
+        if: steps.cf.outputs.configured == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=hakanyemcilik --commit-dirty=true

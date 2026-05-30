@@ -22,10 +22,8 @@ const buildStaticCatalog = () =>
     .sort((a, b) => a.name.localeCompare(b.name, "tr"));
 
 export const ProductsProvider = ({ children }) => {
-  const [products, setProducts] = useState(() =>
-    isSupabaseConfigured ? [] : buildStaticCatalog()
-  );
-  const [loading, setLoading] = useState(isSupabaseConfigured);
+  const [products, setProducts] = useState(() => buildStaticCatalog());
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [source, setSource] = useState(isSupabaseConfigured ? "supabase" : "static");
 
