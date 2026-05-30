@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Seo from "../components/Seo";
+import { pathWithBasename } from "../lib/appBase.js";
 
 const NotFoundPage = () => {
   return (
@@ -29,7 +30,7 @@ const NotFoundPage = () => {
             Ana sayfaya don
           </Link>
           <a
-            href="/#bilgi-bankasi"
+            href={pathWithBasename("/#bilgi-bankasi")}
             className="inline-flex rounded-full border border-emeraldDark/20 px-5 py-2.5 text-sm font-semibold text-emeraldDark"
           >
             Urun vitrini

@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "seed:products": "node scripts/seed-products.mjs",
+    "export:catalog": "node scripts/export-products-from-supabase.mjs",
     "sync:images": "node scripts/sync-product-images.mjs"
   },
   "dependencies": {

@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router-dom";
+import { pathWithBasename } from "../lib/appBase.js";
 import AddToCartButton from "../components/AddToCartButton.jsx";
 import PriceTag from "../components/PriceTag.jsx";
 import ProductCard from "../components/ProductCard";
@@ -64,7 +65,7 @@ const ProductDetailPage = () => {
           Ana Sayfa
         </Link>
         <span className="px-2">/</span>
-        <a href="/#bilgi-bankasi" className="hover:text-emeraldDark">
+        <a href={pathWithBasename("/#bilgi-bankasi")} className="hover:text-emeraldDark">
           Urun Vitrini
         </a>
         <span className="px-2">/</span>
@@ -156,7 +157,7 @@ const ProductDetailPage = () => {
               WhatsApp&apos;tan Sor
             </a>
             <a
-              href="/#bilgi-bankasi"
+              href={pathWithBasename("/#bilgi-bankasi")}
               className="inline-flex rounded-full border border-emeraldDark/20 px-5 py-2 text-sm font-semibold text-emeraldDark"
             >
               Diger urunleri incele

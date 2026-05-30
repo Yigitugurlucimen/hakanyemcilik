@@ -59,7 +59,7 @@ const rows = products.map((product) => ({
   content: product.content || "",
   usage_plan: product.usagePlan || "",
   caution: product.caution || "",
-  price: null,
+  price: product.price == null || product.price === "" ? null : Number(product.price),
   image_url: productImageBySlug[product.slug] || null,
   is_active: true,
   sort_order: 0

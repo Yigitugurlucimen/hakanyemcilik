@@ -1,19 +1,19 @@
 import { FiShoppingCart } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext.jsx";
-
-const navLinks = [
-  { label: "Urunler", href: "/#bilgi-bankasi" },
-  { label: "Sepet", to: "/sepet" },
-  { label: "Kampanyalar", to: "/kampanyalar" },
-  { label: "Blog", to: "/blog" },
-  { label: "Iletisim", href: "/#iletisim" },
-  { label: "Kurumsal", to: "/hakkimizda" },
-  { label: "SSS", to: "/sss" }
-];
+import { assetUrl, pathWithBasename } from "../lib/appBase.js";
 
 const Header = () => {
   const { totalItems } = useCart();
+  const navLinks = [
+    { label: "Urunler", href: pathWithBasename("/#bilgi-bankasi") },
+    { label: "Sepet", to: "/sepet" },
+    { label: "Kampanyalar", to: "/kampanyalar" },
+    { label: "Blog", to: "/blog" },
+    { label: "Iletisim", href: pathWithBasename("/#iletisim") },
+    { label: "Kurumsal", to: "/hakkimizda" },
+    { label: "SSS", to: "/sss" }
+  ];
   const orderLineUrl = "https://wa.me/905325506871";
 
   return (
@@ -23,7 +23,7 @@ const Header = () => {
           <Link to="/" className="flex items-center gap-3">
             <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full bg-white p-0.5">
               <img
-                src="/logo.png"
+                src={assetUrl("logo.png")}
                 alt="Hakan Yemcilik logosu"
                 className="h-full w-full rounded-full object-cover"
               />
