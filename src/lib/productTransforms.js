@@ -1,4 +1,13 @@
+import { assetUrl } from "./appBase.js";
 import { productImageBySlug } from "../data/productImages.js";
+
+/** Relative paths must respect Vite base (./ or /hakanyemcilik/). */
+export const resolveProductImage = (imageUrl, slug) => {
+  const raw = imageUrl || productImageBySlug[slug] || "";
+  if (!raw) return null;
+  if (/^https?:\/\//i.test(raw)) return raw;
+  return assetUrl(raw);
+};
 
 export const parseBrandFromName = (name) => {
   if (!name) return "Diger";
@@ -46,10 +55,7 @@ export const enrichProduct = (product) => ({
   ...product,
   brand: parseBrandFromName(product.name),
   stockStatus: normalizeStock(product.stock),
-  image:
-    product.imageUrl ||
-    productImageBySlug[product.slug] ||
-    null
+  image: resolveProductImage(product.imageUrl, product.slug)
 });
 
 export const productToRow = (product) => ({

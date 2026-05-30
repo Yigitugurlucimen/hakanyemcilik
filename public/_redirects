@@ -1,1 +1,5 @@
-/*    /index.html   200
+# Cloudflare Pages: static dosyalar SPA'ya dusmesin (gorseller, JS, CSS).
+/product-images/*  /product-images/:splat  200
+/assets/*  /assets/:splat  200
+/logo.png  /logo.png  200
+/*  /index.html  200

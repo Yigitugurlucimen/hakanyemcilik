@@ -45,7 +45,19 @@ export const ProductsProvider = ({ children }) => {
       const remoteProducts = await fetchActiveProducts();
 
       if (remoteProducts?.length) {
-        setProducts(remoteProducts);
+        const staticBySlug = Object.fromEntries(
+          staticProducts.map((product) => [product.slug, product])
+        );
+        setProducts(
+          remoteProducts.map((product) => {
+            const local = staticBySlug[product.slug];
+            return enrichProduct({
+              ...product,
+              price: product.price ?? local?.price ?? null,
+              imageUrl: product.imageUrl || productImageBySlug[product.slug] || ""
+            });
+          })
+        );
         setSource("supabase");
       } else {
         setProducts(buildStaticCatalog());

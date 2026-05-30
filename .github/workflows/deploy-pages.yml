@@ -49,6 +49,15 @@ jobs:
             exit 1
           fi
 
+      - name: Verify product images are in build output
+        run: |
+          test -f dist/product-images/by-slug/roehnfried-gervit-w.png || {
+            echo "::error::Product images missing from dist/. Run: npm run sync:images"
+            exit 1
+          }
+          count=$(find dist/product-images/by-slug -type f | wc -l)
+          echo "Product images in dist: $count"
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
