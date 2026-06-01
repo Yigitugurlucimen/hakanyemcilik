@@ -1,6 +1,7 @@
 # hakanyemcilik.com Cloudflare uzerinden yayinlaniyorsa her push bu projeyi gunceller.
 # Gerekli GitHub Secrets: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID
-# Opsiyonel: CLOUDFLARE_PAGES_PROJECT (varsayilan: hakanyemcilik)
+# Ayrica: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY (build icin)
+# Opsiyonel: VITE_ADMIN_EMAILS, SUPABASE_SERVICE_ROLE_KEY (seed workflow icin)
 
 name: Deploy to Cloudflare Pages
 
@@ -25,7 +26,7 @@ jobs:
         run: |
           if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ] || [ -z "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
             echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Cloudflare secrets yok. Repo Settings > Secrets > Actions icinde CLOUDFLARE_API_TOKEN ve CLOUDFLARE_ACCOUNT_ID ekleyin. Bkz. .github/DEPLOY-CLOUDFLARE.md"
+            echo "::warning::Cloudflare secrets yok. hakanyemcilik.com guncellenmez. Bkz. .github/DEPLOY-CLOUDFLARE.md"
           else
             echo "configured=true" >> "$GITHUB_OUTPUT"
           fi
@@ -46,11 +47,30 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_ADMIN_EMAILS: ${{ secrets.VITE_ADMIN_EMAILS }}
         run: npm run build
 
       - name: Add SPA fallback
         if: steps.cf.outputs.configured == 'true'
         run: cp dist/index.html dist/404.html
+
+      - name: Verify Supabase is baked into build
+        if: steps.cf.outputs.configured == 'true'
+        run: |
+          if ! grep -q "supabase.co" dist/assets/*.js; then
+            echo "::error::Build does not include Supabase URL. Add secrets VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY."
+            exit 1
+          fi
+
+      - name: Verify product images are in build output
+        if: steps.cf.outputs.configured == 'true'
+        run: |
+          test -f dist/product-images/by-slug/roehnfried-gervit-w.png || {
+            echo "::error::Product images missing from dist/. Commit public/product-images/by-slug or run: npm run sync:images"
+            exit 1
+          }
+          count=$(find dist/product-images/by-slug -type f | wc -l)
+          echo "Product images in dist: $count"
 
       - name: Deploy to Cloudflare Pages
         if: steps.cf.outputs.configured == 'true'
@@ -59,3 +79,9 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=hakanyemcilik --commit-dirty=true
+
+      - name: Cloudflare deploy skipped
+        if: steps.cf.outputs.configured == 'false'
+        run: |
+          echo "GitHub Pages deploy edildi: https://yigitugurlucimen.github.io/hakanyemcilik/"
+          echo "Custom domain icin Cloudflare secret ekleyin veya DNS'i GitHub Pages'e alin (.github/CLOUDFLARE-DNS.md)"
