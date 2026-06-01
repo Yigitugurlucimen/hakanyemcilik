@@ -1,4 +1,5 @@
 import { slugify } from "../../lib/slugify";
+import ImageUploadField from "./ImageUploadField";
 
 const inputClass =
   "w-full rounded-xl border border-emeraldDark/20 bg-white px-3 py-2 text-sm text-gray-800 outline-none ring-emeraldDark focus:ring-2";
@@ -110,18 +111,11 @@ const ProductForm = ({ product, onChange, onSubmit, saving, submitLabel }) => {
             onChange={(event) => updateField("sortOrder", event.target.value)}
           />
         </div>
-        <div>
-          <label className={labelClass} htmlFor="imageUrl">
-            Gorsel URL
-          </label>
-          <input
-            id="imageUrl"
-            className={inputClass}
-            value={product.imageUrl}
-            onChange={(event) => updateField("imageUrl", event.target.value)}
-            placeholder="/product-images/ornek.png"
-          />
-        </div>
+        <ImageUploadField
+          imageUrl={product.imageUrl}
+          slug={product.slug}
+          onChange={(url) => updateField("imageUrl", url)}
+        />
         <div className="flex items-end">
           <label className="flex items-center gap-2 text-sm font-semibold text-emeraldDark">
             <input

@@ -4,10 +4,16 @@ import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
 import Footer from "./components/Footer";
 import FloatingWhatsAppButton from "./components/FloatingWhatsAppButton";
 import Header from "./components/Header";
+import ProductsLoadBanner from "./components/ProductsLoadBanner";
 import Seo from "./components/Seo";
+import { defaultSeoDescription } from "./lib/siteConfig.js";
 import AboutPage from "./pages/AboutPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminProductFormPage from "./pages/admin/AdminProductFormPage";
+import AdminBlogFormPage from "./pages/admin/AdminBlogFormPage";
+import AdminBlogsPage from "./pages/admin/AdminBlogsPage";
+import AdminCampaignFormPage from "./pages/admin/AdminCampaignFormPage";
+import AdminCampaignsPage from "./pages/admin/AdminCampaignsPage";
 import AdminProductsPage from "./pages/admin/AdminProductsPage";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import BlogListPage from "./pages/BlogListPage";
@@ -25,8 +31,9 @@ import TermsPage from "./pages/TermsPage";
 
 const StorefrontApp = () => (
   <div className="min-h-screen bg-white">
-    <Seo description="Hakan Yemcilik bilgi bankasinda guvercin takviyeleri, kullanim amaci, dozaj ve urun detaylarini inceleyin." />
+    <Seo description={defaultSeoDescription} />
     <Header />
+    <ProductsLoadBanner />
     <main>
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -58,6 +65,12 @@ const App = () => (
         <Route index element={<AdminProductsPage />} />
         <Route path="urun/yeni" element={<AdminProductFormPage />} />
         <Route path="urun/:slug" element={<AdminProductFormPage />} />
+        <Route path="kampanyalar" element={<AdminCampaignsPage />} />
+        <Route path="kampanya/yeni" element={<AdminCampaignFormPage />} />
+        <Route path="kampanya/:slug" element={<AdminCampaignFormPage />} />
+        <Route path="blog" element={<AdminBlogsPage />} />
+        <Route path="blog/yeni" element={<AdminBlogFormPage />} />
+        <Route path="blog/:slug" element={<AdminBlogFormPage />} />
       </Route>
     </Route>
     <Route path="/*" element={<StorefrontApp />} />

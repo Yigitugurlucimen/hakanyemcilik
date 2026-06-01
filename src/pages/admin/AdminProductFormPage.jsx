@@ -5,6 +5,7 @@ import { useProducts } from "../../context/ProductsContext";
 import { createEmptyProduct } from "../../lib/emptyProduct";
 import {
   createProduct,
+  deleteProduct,
   fetchProductBySlug,
   updateProduct
 } from "../../services/productService";
@@ -18,6 +19,7 @@ const AdminProductFormPage = () => {
   const [product, setProduct] = useState(createEmptyProduct());
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -63,6 +65,28 @@ const AdminProductFormPage = () => {
     loadProduct();
   }, [isNew, slug]);
 
+  const handleDelete = async () => {
+    if (!product.id) return;
+
+    const confirmed = window.confirm(
+      `"${product.name}" ürününü kalıcı olarak silmek istediğinize emin misiniz?`
+    );
+    if (!confirmed) return;
+
+    setDeleting(true);
+    setError("");
+
+    try {
+      await deleteProduct(product.id);
+      await refreshProducts();
+      navigate("/panel");
+    } catch (deleteError) {
+      setError(deleteError.message || "Ürün silinemedi.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setSaving(true);
@@ -103,8 +127,18 @@ const AdminProductFormPage = () => {
           onChange={setProduct}
           onSubmit={handleSubmit}
           saving={saving}
-          submitLabel={isNew ? "Urunu Kaydet" : "Degisiklikleri Kaydet"}
+          submitLabel={isNew ? "Ürünü Kaydet" : "Değişiklikleri Kaydet"}
         />
+        {!isNew && product.id ? (
+          <button
+            type="button"
+            disabled={deleting || saving}
+            onClick={handleDelete}
+            className="mt-6 rounded-full border border-red-200 px-5 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:opacity-50"
+          >
+            {deleting ? "Siliniyor…" : "Ürünü Sil"}
+          </button>
+        ) : null}
       </div>
     </section>
   );

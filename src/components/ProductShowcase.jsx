@@ -48,7 +48,7 @@ const ProductShowcase = () => {
   if (loading) {
     return (
       <section id="bilgi-bankasi" className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">
-        <p className="text-sm text-gray-600">Urunler yukleniyor...</p>
+        <p className="text-sm text-gray-600">Ürünler yükleniyor…</p>
       </section>
     );
   }

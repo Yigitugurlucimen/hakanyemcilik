@@ -14,7 +14,7 @@ const ProductDetailPage = () => {
   if (loading) {
     return (
       <section className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">
-        <p className="text-sm text-gray-600">Urun yukleniyor...</p>
+        <p className="text-sm text-gray-600">Ürün yükleniyor…</p>
       </section>
     );
   }
@@ -23,7 +23,7 @@ const ProductDetailPage = () => {
     return (
       <section className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">
         <Seo
-          title="Urun Bulunamadi"
+          title="Ürün Bulunamadı"
           description="Aradiginiz urun bulunamadi. Bilgi bankasina donerek guncel urunleri inceleyebilirsiniz."
         />
         <h2 className="text-3xl font-black text-emeraldDark">Ürün Bulunamadı</h2>
@@ -66,7 +66,7 @@ const ProductDetailPage = () => {
         </Link>
         <span className="px-2">/</span>
         <a href={pathWithBasename("/#bilgi-bankasi")} className="hover:text-emeraldDark">
-          Urun Vitrini
+          Ürün Vitrini
         </a>
         <span className="px-2">/</span>
         <span className="text-emeraldDark">{product.name}</span>
@@ -103,7 +103,7 @@ const ProductDetailPage = () => {
             />
           ) : (
             <div className="grid h-44 place-content-center text-sm font-semibold text-emeraldDark/70">
-              Urun gorseli yakinda eklenecek
+              Ürün görseli yakında eklenecek
             </div>
           )}
         </div>
@@ -170,7 +170,7 @@ const ProductDetailPage = () => {
         <div className="mt-10">
           <div className="mb-6">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emeraldDark/70">
-              Benzer Urunler
+              Benzer Ürünler
             </p>
             <h2 className="mt-2 text-2xl font-black text-emeraldDark">
               Ilgini cekebilecek diger urunler

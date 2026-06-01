@@ -1,4 +1,4 @@
-const campaignDefinitions = [
+export const staticCampaignDefinitions = [
   {
     slug: "performans-seti",
     name: "Performans Seti",
@@ -81,8 +81,8 @@ const campaignDefinitions = [
   }
 ];
 
-export const buildCampaigns = (catalog = []) =>
-  campaignDefinitions.map((campaign) => {
+export const buildCampaigns = (definitions, catalog = []) =>
+  definitions.map((campaign) => {
     const campaignProducts = campaign.productSlugs
       .map((slug) => catalog.find((product) => product.slug === slug))
       .filter(Boolean);
@@ -93,10 +93,10 @@ export const buildCampaigns = (catalog = []) =>
     };
   });
 
-export const getCampaignBySlug = (slug, catalog = []) =>
-  buildCampaigns(catalog).find((campaign) => campaign.slug === slug);
+export const getCampaignBySlug = (slug, definitions, catalog = []) =>
+  buildCampaigns(definitions, catalog).find((campaign) => campaign.slug === slug);
 
-export const blogPosts = [
+export const staticBlogPosts = [
   {
     slug: "performans-seti-yaris-oncesi-program",
     campaignSlug: "performans-seti",
@@ -238,8 +238,11 @@ export const blogPosts = [
   }
 ];
 
-export const getBlogBySlug = (slug) =>
-  blogPosts.find((post) => post.slug === slug);
+export const getBlogBySlug = (slug, posts = staticBlogPosts) =>
+  posts.find((post) => post.slug === slug);
 
-export const getBlogsByCampaign = (campaignSlug) =>
-  blogPosts.filter((post) => post.campaignSlug === campaignSlug);
+export const getBlogsByCampaign = (campaignSlug, posts = staticBlogPosts) =>
+  posts.filter((post) => post.campaignSlug === campaignSlug);
+
+/** @deprecated staticBlogPosts kullanın */
+export const blogPosts = staticBlogPosts;

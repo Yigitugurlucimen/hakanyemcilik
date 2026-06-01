@@ -32,7 +32,7 @@ const ProductCard = ({ product }) => {
           />
         ) : (
           <div className="grid h-full place-content-center text-sm font-semibold text-emeraldDark/70">
-            Urun gorseli yakinda eklenecek
+            Ürün görseli yakında eklenecek
           </div>
         )}
         <span className="absolute bottom-3 right-3 rounded-lg bg-white/90 p-2 text-emeraldDark shadow">
@@ -77,7 +77,7 @@ const ProductCard = ({ product }) => {
             className="inline-flex w-fit items-center gap-2 rounded-full bg-pistachio px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white shadow-sm"
           >
             <FiMessageCircle size={14} />
-            Sor / Siparis
+            Sor / Sipariş
           </a>
         </div>
       </div>

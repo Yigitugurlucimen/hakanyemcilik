@@ -85,3 +85,6 @@ using (true);
 
 -- Panel girisi: Supabase Dashboard > Authentication > Users > Add user
 -- (e-posta + sifre ile admin hesabi olusturun)
+--
+-- Sonraki adim: supabase/phase-b.sql (RLS, kampanya/blog CMS, storage)
+-- Ardından: npm run seed:content

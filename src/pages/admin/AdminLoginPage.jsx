@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
+import Seo from "../../components/Seo";
 import { useAuth } from "../../context/AuthContext";
 import { isSupabaseConfigured } from "../../lib/supabase";
 
@@ -42,6 +43,7 @@ const AdminLoginPage = () => {
 
   return (
     <div className="grid min-h-screen place-content-center bg-slate-50 px-4">
+      <Seo title="Giriş" noindex />
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md rounded-2xl border border-emeraldDark/10 bg-white p-6 shadow-sm"

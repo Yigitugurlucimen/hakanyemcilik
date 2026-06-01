@@ -23,15 +23,15 @@ const CartPage = () => {
       <section className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">
         <Seo
           title="Sepet"
-          description="Hakan Yemcilik sepetiniz. Urunlerinizi ekleyip WhatsApp uzerinden siparis verin."
+          description="Hakan Yemcilik sepetiniz. Ürünlerinizi ekleyip WhatsApp üzerinden sipariş verin."
         />
         <h1 className="text-3xl font-black text-emeraldDark">Sepetiniz</h1>
-        <p className="mt-3 text-gray-700">Sepetiniz su an bos.</p>
+        <p className="mt-3 text-gray-700">Sepetiniz şu an boş.</p>
         <Link
           to="/#bilgi-bankasi"
           className="mt-6 inline-flex rounded-full bg-pistachio px-6 py-3 text-sm font-bold uppercase tracking-wide text-white"
         >
-          Urunlere Git
+          Ürünlere Git
         </Link>
       </section>
     );
@@ -41,12 +41,12 @@ const CartPage = () => {
     <section className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">
       <Seo
         title="Sepet"
-        description="Sepetinizdeki urunleri inceleyin ve WhatsApp ile siparis verin."
+        description="Sepetinizdeki ürünleri inceleyin ve WhatsApp ile sipariş verin."
       />
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emeraldDark/70">
-            Siparis
+            Sipariş
           </p>
           <h1 className="mt-2 text-3xl font-black text-emeraldDark md:text-4xl">
             Sepetiniz
@@ -137,14 +137,14 @@ const CartPage = () => {
       <aside className="mt-8 rounded-2xl border border-emeraldDark/10 bg-emeraldDark/5 p-6">
         {subtotal != null ? (
           <p className="text-sm text-gray-600">
-            Ara toplam (fiyat girilmis urunler)
+            Ara toplam (fiyat girilmiş ürünler)
           </p>
         ) : null}
         <p className="mt-1 text-2xl font-black text-emeraldDark">
           {subtotal != null ? formatPrice(subtotal) : "Fiyatlar panelden girilecek"}
         </p>
         <p className="mt-3 text-sm text-gray-600">
-          Odeme ve kargo WhatsApp uzerinden netlestirilir. Kart odeme (Faz C) sonra
+          Ödeme ve kargo WhatsApp üzerinden netleştirilir. Kart ödemesi (Faz C) sonra
           eklenecek.
         </p>
 
@@ -156,13 +156,13 @@ const CartPage = () => {
             className="inline-flex items-center gap-2 rounded-full bg-pistachio px-6 py-3 text-sm font-bold uppercase tracking-wide text-white"
           >
             <FiMessageCircle size={16} />
-            WhatsApp ile Siparis Ver
+            WhatsApp ile Sipariş Ver
           </a>
           <Link
             to="/#bilgi-bankasi"
             className="inline-flex rounded-full border border-emeraldDark/20 px-6 py-3 text-sm font-semibold text-emeraldDark"
           >
-            Alisverise Devam
+            Alışverişe Devam
           </Link>
         </div>
       </aside>

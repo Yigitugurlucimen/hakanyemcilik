@@ -148,6 +148,36 @@ const toPublishedUrl = (path) => {
   return `${PUBLISH_BASE}${normalized}`;
 };
 
+const findExistingBySlug = (slug) => {
+  for (const ext of [".jpg", ".jpeg", ".png", ".webp"]) {
+    const candidate = join(outputRoot, `${slug}${ext}`);
+    if (existsSync(candidate)) return candidate;
+  }
+  return null;
+};
+
+const extFromUrl = (url) => {
+  try {
+    const pathname = new URL(url).pathname;
+    const ext = extname(pathname).toLowerCase();
+    if ([".jpg", ".jpeg", ".png", ".webp"].includes(ext)) return ext;
+  } catch {
+    /* ignore */
+  }
+  return ".jpg";
+};
+
+const downloadExternalImage = async (url, destPath) => {
+  const response = await fetch(url, {
+    headers: { "User-Agent": "HakanYemcilik-ImageSync/1.0" }
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  const buffer = Buffer.from(await response.arrayBuffer());
+  writeFileSync(destPath, buffer);
+};
+
 const { products } = await import(
   new URL("../src/data/products.js", import.meta.url).href
 );
@@ -166,8 +196,29 @@ for (const product of products) {
     continue;
   }
 
+  const existingLocal = findExistingBySlug(product.slug);
+  if (existingLocal) {
+    const destFile = existingLocal.split(/[/\\]/).pop();
+    productImageBySlug[product.slug] = toPublishedUrl(
+      `/product-images/by-slug/${destFile}`
+    );
+    continue;
+  }
+
   if (mapping.external) {
-    productImageBySlug[product.slug] = toPublishedUrl(mapping.external);
+    const ext = extFromUrl(mapping.external);
+    const destFile = `${product.slug}${ext}`;
+    const destPath = join(outputRoot, destFile);
+
+    try {
+      await downloadExternalImage(mapping.external, destPath);
+      productImageBySlug[product.slug] = toPublishedUrl(
+        `/product-images/by-slug/${destFile}`
+      );
+    } catch (downloadError) {
+      errors.push(`${product.slug}: indirilemedi (${downloadError.message})`);
+      productImageBySlug[product.slug] = toPublishedUrl(mapping.external);
+    }
     continue;
   }
 

@@ -24,7 +24,7 @@ const FaqPage = () => {
     <section className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">
       <Seo
         title="Sik Sorulan Sorular"
-        description="Urun kullanimi, dozaj, siparis sureci ve donemsel destek planlariyla ilgili sik sorulan sorular."
+        description="Ürün kullanımı, dozaj, sipariş süreci ve dönemsel destek planlarıyla ilgili sık sorulan sorular."
       />
       <h1 className="text-3xl font-black text-emeraldDark md:text-4xl">
         Sık Sorulan Sorular

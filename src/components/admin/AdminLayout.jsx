@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
+import Seo from "../Seo";
 import { useAuth } from "../../context/AuthContext";
 
 const navClass = ({ isActive }) =>
@@ -11,13 +12,14 @@ const AdminLayout = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <Seo title="Yönetim Paneli" noindex />
       <header className="border-b border-emeraldDark/10 bg-white">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-4 md:px-6">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emeraldDark/70">
               Hakan Yemcilik
             </p>
-            <h1 className="text-xl font-black text-emeraldDark">Urun Yonetim Paneli</h1>
+            <h1 className="text-xl font-black text-emeraldDark">Ürün Yönetim Paneli</h1>
             {user?.email ? (
               <p className="mt-1 text-xs text-gray-500">{user.email}</p>
             ) : null}
@@ -25,10 +27,13 @@ const AdminLayout = () => {
 
           <nav className="flex flex-wrap items-center gap-2">
             <NavLink to="/panel" end className={navClass}>
-              Urunler
+              Ürünler
             </NavLink>
-            <NavLink to="/panel/urun/yeni" className={navClass}>
-              Yeni Urun
+            <NavLink to="/panel/kampanyalar" className={navClass}>
+              Kampanyalar
+            </NavLink>
+            <NavLink to="/panel/blog" className={navClass}>
+              Blog
             </NavLink>
             <Link
               to="/"
@@ -41,7 +46,7 @@ const AdminLayout = () => {
               onClick={() => signOut()}
               className="rounded-lg bg-emeraldDark px-3 py-2 text-sm font-semibold text-white"
             >
-              Cikis
+              Çıkış
             </button>
           </nav>
         </div>

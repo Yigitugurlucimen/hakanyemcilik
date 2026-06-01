@@ -1,4 +1,4 @@
-import { whatsappNumber } from "../data/products";
+import { whatsappUrl } from "../lib/siteConfig.js";
 
 const ContactSection = () => {
   return (
@@ -13,7 +13,7 @@ const ContactSection = () => {
           doğrudan WhatsApp üzerinden ulaşabilirsiniz.
         </p>
         <a
-          href={`https://wa.me/${whatsappNumber}`}
+          href={whatsappUrl}
           target="_blank"
           rel="noreferrer"
           className="mt-6 inline-flex rounded-full bg-pistachio px-6 py-3 text-sm font-bold text-white transition hover:brightness-95"

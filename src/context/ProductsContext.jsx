@@ -65,7 +65,9 @@ export const ProductsProvider = ({ children }) => {
       console.error(loadError);
       setProducts(buildStaticCatalog());
       setSource("static-fallback");
-      setError("Urunler yuklenemedi. Gecici olarak yerel liste kullaniliyor.");
+      setError(
+        "Ürünler yüklenemedi. Geçici olarak yerel liste gösteriliyor; sipariş için WhatsApp hattını kullanabilirsiniz."
+      );
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,5 @@
 import { FiMessageCircle } from "react-icons/fi";
-import { whatsappNumber } from "../data/products";
+import { whatsappNumber } from "../lib/siteConfig.js";
 
 const FloatingWhatsAppButton = () => {
   const requestUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(

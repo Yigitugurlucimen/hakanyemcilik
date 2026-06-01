@@ -4,7 +4,7 @@ const TermsPage = () => {
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">
       <Seo
-        title="Kullanim Kosullari"
+        title="Kullanım Koşulları"
         description="Bilgi bankasi iceriklerinin kullanimi ve web sitesi kullanim kosullari."
       />
       <h1 className="text-3xl font-black text-emeraldDark md:text-4xl">

@@ -1,12 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import Seo from "../components/Seo";
-import { getBlogsByCampaign } from "../data/campaigns";
+import { useContent } from "../context/ContentContext";
 import { useCampaign } from "../hooks/useCampaigns";
 
 const CampaignDetailPage = () => {
   const { slug } = useParams();
   const campaign = useCampaign(slug);
+  const { getBlogsByCampaign } = useContent();
 
   if (!campaign) {
     return (
@@ -90,7 +91,7 @@ const CampaignDetailPage = () => {
       </div>
 
       <div className="mt-10">
-        <h2 className="text-2xl font-black text-emeraldDark">Setteki Urunler</h2>
+        <h2 className="text-2xl font-black text-emeraldDark">Setteki Ürünler</h2>
         <div className="mt-4 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {campaign.products.map((product) => (
             <ProductCard key={product.slug} product={product} />

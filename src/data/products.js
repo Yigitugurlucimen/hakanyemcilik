@@ -1,4 +1,4 @@
-export const whatsappNumber = "905325506871";
+export { whatsappNumber } from "../lib/siteConfig.js";
 
 export const products = [
   {
@@ -385,7 +385,8 @@ export const products = [
       "bitkisel",
       "bağışıklık",
       "destek"
-    ]
+    ],
+    "price": 1450
   },
   {
     "slug": "roehnfried-avidress-plus",
@@ -674,7 +675,8 @@ export const products = [
       "yarış sonrası",
       "enerji",
       "destek"
-    ]
+    ],
+    "price": 1650
   },
   {
     "slug": "roehnfried-sedochol",

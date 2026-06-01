@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { isAdminUser } from "../lib/adminAuth";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 
 const AuthContext = createContext(null);
@@ -50,16 +51,19 @@ export const AuthProvider = ({ children }) => {
     if (error) throw error;
   }, []);
 
+  const user = session?.user ?? null;
+
   const value = useMemo(
     () => ({
       session,
-      user: session?.user ?? null,
+      user,
       loading,
       isAuthenticated: Boolean(session),
+      isAdmin: isAdminUser(user),
       signIn,
       signOut
     }),
-    [session, loading, signIn, signOut]
+    [session, user, loading, signIn, signOut]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

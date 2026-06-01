@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { blogPosts } from "../data/campaigns";
-import { useCampaigns } from "../hooks/useCampaigns";
+import { useBlogPosts, useCampaigns } from "../hooks/useCampaigns";
 
 const BlogShowcase = () => {
   const campaigns = useCampaigns();
+  const blogPosts = useBlogPosts();
   const campaignNameBySlug = Object.fromEntries(
     campaigns.map((campaign) => [campaign.slug, campaign.name])
   );

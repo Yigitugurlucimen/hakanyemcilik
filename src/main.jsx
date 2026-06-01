@@ -5,6 +5,7 @@ import App from "./App";
 import { getRouterBasename } from "./lib/appBase.js";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext.jsx";
+import { ContentProvider } from "./context/ContentContext";
 import { ProductsProvider } from "./context/ProductsContext";
 import "./index.css";
 
@@ -13,9 +14,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <BrowserRouter basename={getRouterBasename()}>
       <AuthProvider>
         <ProductsProvider>
-          <CartProvider>
-            <App />
-          </CartProvider>
+          <ContentProvider>
+            <CartProvider>
+              <App />
+            </CartProvider>
+          </ContentProvider>
         </ProductsProvider>
       </AuthProvider>
     </BrowserRouter>
