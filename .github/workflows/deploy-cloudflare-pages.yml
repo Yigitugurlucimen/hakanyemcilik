@@ -116,8 +116,8 @@ jobs:
       - name: Verify Supabase is baked into build
         if: steps.cf.outputs.configured == 'true'
         run: |
-          if ! grep -q "supabase.co" dist/assets/*.js; then
-            echo "::error::Build does not include Supabase URL. Add secrets VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY."
+          if ! grep -qE 'https://[a-z0-9]+\.supabase\.co' dist/assets/*.js; then
+            echo "::error::Build does not include Supabase project URL. Add secrets VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY."
             exit 1
           fi
 
