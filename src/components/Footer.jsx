@@ -15,6 +15,9 @@ const Footer = () => {
           <p className="font-semibold text-emeraldDark">Hakan Yemcilik</p>
           <p className="mt-1">Adana | Petshop ve Güvercin Takviyeleri Bilgi Bankası</p>
           <p className="mt-2">© {new Date().getFullYear()} Tüm hakları saklıdır.</p>
+          <p className="mt-1 text-[10px] text-gray-400" title="Canli yayin surumu">
+            Build {__APP_BUILD_ID__}
+          </p>
         </div>
 
         <div className="flex flex-col gap-2">

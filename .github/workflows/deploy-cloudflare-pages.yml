@@ -1,7 +1,10 @@
-# hakanyemcilik.com Cloudflare uzerinden yayinlaniyorsa her push bu projeyi gunceller.
+# hakanyemcilik.com Cloudflare Pages (hakanyemcilik-web) uzerinden yayinlanir.
 # Gerekli GitHub Secrets: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID
 # Ayrica: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY (build icin)
 # Opsiyonel: VITE_ADMIN_EMAILS, SUPABASE_SERVICE_ROLE_KEY (seed workflow icin)
+
+env:
+  CF_PAGES_PROJECT: hakanyemcilik-web
 
 name: Deploy to Cloudflare Pages
 
@@ -42,6 +45,56 @@ jobs:
         if: steps.cf.outputs.configured == 'true'
         run: npm ci
 
+      - name: Sync Cloudflare Pages build config and env vars
+        if: steps.cf.outputs.configured == 'true'
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_ADMIN_EMAILS: ${{ secrets.VITE_ADMIN_EMAILS }}
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg url "$VITE_SUPABASE_URL" \
+            --arg key "$VITE_SUPABASE_ANON_KEY" \
+            --arg admin "${VITE_ADMIN_EMAILS:-}" \
+            '{
+              build_config: {
+                build_command: "npm run build",
+                destination_dir: "dist",
+                root_dir: ""
+              },
+              deployment_configs: {
+                production: {
+                  env_vars: (
+                    {
+                      VITE_SUPABASE_URL: { value: $url },
+                      VITE_SUPABASE_ANON_KEY: { value: $key }
+                    }
+                    + (if $admin != "" then { VITE_ADMIN_EMAILS: { value: $admin } } else {} end)
+                  )
+                },
+                preview: {
+                  env_vars: (
+                    {
+                      VITE_SUPABASE_URL: { value: $url },
+                      VITE_SUPABASE_ANON_KEY: { value: $key }
+                    }
+                    + (if $admin != "" then { VITE_ADMIN_EMAILS: { value: $admin } } else {} end)
+                  )
+                }
+              }
+            }')
+          HTTP_CODE=$(curl -sS -o /tmp/cf-response.json -w "%{http_code}" \
+            -X PATCH "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PAGES_PROJECT}" \
+            -H "Authorization: Bearer ${CF_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data "$PAYLOAD")
+          cat /tmp/cf-response.json
+          if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "::warning::Cloudflare project config sync HTTP $HTTP_CODE (wrangler deploy devam edecek)"
+          fi
+
       - name: Build
         if: steps.cf.outputs.configured == 'true'
         env:
@@ -78,7 +131,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=hakanyemcilik --commit-dirty=true
+          command: pages deploy dist --project-name=${{ env.CF_PAGES_PROJECT }} --commit-dirty=true
 
       - name: Cloudflare deploy skipped
         if: steps.cf.outputs.configured == 'false'

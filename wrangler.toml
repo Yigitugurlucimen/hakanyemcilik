@@ -1,0 +1,7 @@
+# Cloudflare Pages — build ciktisi dist/ olmali (kaynak index.html degil).
+# Dashboard: Workers & Pages > hakanyemcilik-web > Settings > Builds
+#   Build command: npm run build
+#   Build output directory: dist
+name = "hakanyemcilik-web"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "dist"

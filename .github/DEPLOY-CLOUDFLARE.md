@@ -3,6 +3,32 @@
 `hakanyemcilik.com` **Cloudflare** uzerinden yayinlaniyor. Sadece GitHub'a push etmek yetmez;
 Cloudflare Pages projesinin de guncellenmesi gerekir.
 
+## Belirti: Sadece "Hakan Yemcilik" basligi, bos sayfa
+
+Canli sitede sayfa kaynagina bakin (Ctrl+U). Asagidaki satir **yanlis** (gelistirme surumu):
+
+```html
+<script type="module" src="/src/main.jsx"></script>
+```
+
+Dogru production build su sekilde olmali:
+
+```html
+<script type="module" crossorigin src="./assets/index-xxxxx.js"></script>
+```
+
+**Neden:** Cloudflare Pages projesi `dist/` yerine repo kokunu yayinliyor; Vite build calismiyor.
+
+**Hizli test:**
+
+| URL | Beklenen |
+|-----|----------|
+| `hakanyemcilik.com/product-images/.../roehnfried-gervit-w.png` | `image/png` |
+| Yanlis yapilandirmada | `text/html` (SPA fallback) |
+
+GitHub Pages yedek adresi her zaman dogru build'i gosterir:
+https://yigitugurlucimen.github.io/hakanyemcilik/
+
 ## Hizli cozum (5 dakika)
 
 ### 1) Cloudflare API token
@@ -26,15 +52,34 @@ Repo → **Settings** → **Secrets and variables** → **Actions** → **New re
 
 (Zaten varsa: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`)
 
-### 4) Pages proje adi
+### 4) Cloudflare build ayarlari (kritik)
 
-Cloudflare → **Workers & Pages** → projenizin adi (or. `hakanyemcilik`)
+Cloudflare → **Workers & Pages** → `hakanyemcilik-web` → **Settings** → **Builds**:
 
-Farkliysa repo → **Settings** → **Variables** → **Repository variable**:
+| Alan | Deger |
+|------|--------|
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Root directory | `/` (bos) |
 
-- `CLOUDFLARE_PAGES_PROJECT` = proje adiniz
+**Environment variables** (Production):
 
-### 5) Tetikle
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `VITE_ADMIN_EMAILS` (opsiyonel)
+
+Projede **Git baglantisi** varsa ve GitHub Actions ile cakisiyorsa:
+
+- Ya yukaridaki build ayarlarini duzeltin (onerilen),
+- Ya da Cloudflare'deki **Git entegrasyonunu kaldirin**; sadece GitHub Actions `Deploy to Cloudflare Pages` workflow'u deploy etsin.
+
+### 5) Pages proje adi
+
+Cloudflare proje adi: **`hakanyemcilik-web`**
+
+GitHub Actions workflow bu projeye deploy eder ve Supabase env degiskenlerini Cloudflare'e senkronlar.
+
+### 6) Tetikle
 
 **Actions** → **Deploy to Cloudflare Pages** → **Run workflow**
 
