@@ -101,6 +101,31 @@ jobs:
             exit 1
           fi
 
+      - name: Point custom domain to hakanyemcilik-web
+        if: steps.cf.outputs.configured == 'true'
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          for OLD in hakanyemcilik hakanyemcilik-web; do
+            if [ "$OLD" != "$CF_PAGES_PROJECT" ]; then
+              curl -sS -o /tmp/cf-domain-rm.json -w "remove-%{http_code}\n" \
+                -X DELETE "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${OLD}/domains/hakanyemcilik.com" \
+                -H "Authorization: Bearer ${CF_API_TOKEN}" || true
+            fi
+          done
+          for DOMAIN in hakanyemcilik.com www.hakanyemcilik.com; do
+            HTTP_CODE=$(curl -sS -o /tmp/cf-domain-add.json -w "%{http_code}" \
+              -X POST "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PAGES_PROJECT}/domains" \
+              -H "Authorization: Bearer ${CF_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              --data "{\"name\":\"${DOMAIN}\"}")
+            cat /tmp/cf-domain-add.json
+            if [ "$HTTP_CODE" -ge 400 ] && [ "$HTTP_CODE" -ne 409 ]; then
+              echo "::warning::Domain ${DOMAIN} attach HTTP ${HTTP_CODE}"
+            fi
+          done
+
       - name: Build
         if: steps.cf.outputs.configured == 'true'
         env:
@@ -137,7 +162,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ env.CF_PAGES_PROJECT }} --commit-dirty=true
+          command: pages deploy dist --project-name=${{ env.CF_PAGES_PROJECT }} --branch=main --commit-dirty=true
 
       - name: Cloudflare deploy skipped
         if: steps.cf.outputs.configured == 'false'
