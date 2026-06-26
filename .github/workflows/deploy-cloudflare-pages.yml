@@ -107,9 +107,11 @@ jobs:
           CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
-          for OLD in hakanyemcilik hakanyemcilik-web; do
+          PROJECTS=$(curl -sS "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects" \
+            -H "Authorization: Bearer ${CF_API_TOKEN}" | jq -r '.result[].name')
+          for OLD in $PROJECTS; do
             if [ "$OLD" != "$CF_PAGES_PROJECT" ]; then
-              curl -sS -o /tmp/cf-domain-rm.json -w "remove-%{http_code}\n" \
+              curl -sS -o /tmp/cf-domain-rm.json -w "remove-${OLD}-%{http_code}\n" \
                 -X DELETE "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${OLD}/domains/hakanyemcilik.com" \
                 -H "Authorization: Bearer ${CF_API_TOKEN}" || true
             fi
@@ -126,17 +128,14 @@ jobs:
             fi
           done
 
-      - name: Build
+      - name: Build (dogrulama)
         if: steps.cf.outputs.configured == 'true'
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_ADMIN_EMAILS: ${{ secrets.VITE_ADMIN_EMAILS }}
+          GITHUB_SHA: ${{ github.sha }}
         run: npm run build
-
-      - name: Add SPA fallback
-        if: steps.cf.outputs.configured == 'true'
-        run: cp dist/index.html dist/404.html
 
       - name: Verify Supabase is baked into build
         if: steps.cf.outputs.configured == 'true'
@@ -146,26 +145,25 @@ jobs:
             exit 1
           fi
 
-      - name: Verify product images are in build output
+      - name: Trigger Cloudflare Pages production build
         if: steps.cf.outputs.configured == 'true'
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
-          test -f dist/product-images/by-slug/roehnfried-gervit-w.png || {
-            echo "::error::Product images missing from dist/. Commit public/product-images/by-slug or run: npm run sync:images"
+          HTTP_CODE=$(curl -sS -o /tmp/cf-deploy.json -w "%{http_code}" \
+            -X POST "https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PAGES_PROJECT}/deployments" \
+            -H "Authorization: Bearer ${CF_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data '{"branch":"main"}')
+          cat /tmp/cf-deploy.json
+          if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "::error::Cloudflare production deploy trigger failed (HTTP $HTTP_CODE)"
             exit 1
-          }
-          count=$(find dist/product-images/by-slug -type f | wc -l)
-          echo "Product images in dist: $count"
-
-      - name: Deploy to Cloudflare Pages
-        if: steps.cf.outputs.configured == 'true'
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ env.CF_PAGES_PROJECT }} --branch=main --commit-dirty=true
+          fi
 
       - name: Cloudflare deploy skipped
         if: steps.cf.outputs.configured == 'false'
         run: |
           echo "GitHub Pages deploy edildi: https://yigitugurlucimen.github.io/hakanyemcilik/"
-          echo "Custom domain icin Cloudflare secret ekleyin veya DNS'i GitHub Pages'e alin (.github/CLOUDFLARE-DNS.md)"
+          echo "Custom domain icin Cloudflare secret ekleyin veya DNS'i GitHub Pages'e alin (.github/DEPLOY-CLOUDFLARE.md)"
