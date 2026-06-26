@@ -83,6 +83,11 @@ jobs:
                     + (if $admin != "" then { VITE_ADMIN_EMAILS: { value: $admin } } else {} end)
                   )
                 }
+              },
+              source: {
+                config: {
+                  deployments_enabled: false
+                }
               }
             }')
           HTTP_CODE=$(curl -sS -o /tmp/cf-response.json -w "%{http_code}" \
@@ -92,7 +97,8 @@ jobs:
             --data "$PAYLOAD")
           cat /tmp/cf-response.json
           if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
-            echo "::warning::Cloudflare project config sync HTTP $HTTP_CODE (wrangler deploy devam edecek)"
+            echo "::error::Cloudflare project config sync failed (HTTP $HTTP_CODE)"
+            exit 1
           fi
 
       - name: Build
