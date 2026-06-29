@@ -54,21 +54,17 @@ const ProductShowcase = () => {
   }
 
   return (
-    <section id="bilgi-bankasi" className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6">
+    <section id="bilgi-bankasi" className="section-shell py-16 md:py-20">
       <div className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emeraldDark/70">
-          Bilgi Bankası
-        </p>
-        <h2 className="mt-2 text-3xl font-black text-emeraldDark md:text-4xl">
-          Ürün Vitrini
-        </h2>
-        <p className="mt-2 text-sm text-gray-600">
+        <p className="section-eyebrow">Bilgi Bankası</p>
+        <h2 className="section-title">Ürün Vitrini</h2>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 md:text-base">
           Satışa hızlı dönüş için ürünü aratın, döneme göre filtreleyin ve tek
           tıkla WhatsApp siparişe geçin.
         </p>
       </div>
 
-      <div className="mb-6 rounded-2xl border border-emeraldDark/10 bg-emeraldDark/5 p-4 md:p-5">
+      <div className="mb-6 rounded-3xl border border-emeraldDark/10 bg-white p-4 shadow-card md:p-6">
         <label
           htmlFor="product-search"
           className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-emeraldDark/70"

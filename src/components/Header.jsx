@@ -44,8 +44,8 @@ const Header = () => {
     );
 
   return (
-    <header className="border-b border-emeraldDark/10 bg-white">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 md:px-6">
+    <header className="sticky top-0 z-40 border-b border-emeraldDark/10 bg-white/90 backdrop-blur-md">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-3 md:px-6">
         <div className="flex items-center justify-between gap-3">
           <Link to="/" className="flex items-center gap-3" onClick={closeMenu}>
             <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full bg-white p-0.5">
