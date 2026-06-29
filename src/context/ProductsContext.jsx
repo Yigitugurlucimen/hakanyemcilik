@@ -52,7 +52,7 @@ export const ProductsProvider = ({ children }) => {
             return enrichProduct({
               ...product,
               price: product.price ?? local?.price ?? null,
-              imageUrl: product.imageUrl || productImageBySlug[product.slug] || ""
+              imageUrl: productImageBySlug[product.slug] || product.imageUrl || ""
             });
           })
         );

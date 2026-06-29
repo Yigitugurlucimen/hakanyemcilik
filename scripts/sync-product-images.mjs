@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { createHash } from "node:crypto";
 import {
   copyFileSync,
   existsSync,
@@ -6,6 +7,7 @@ import {
   readFileSync,
   readdirSync,
   statSync,
+  unlinkSync,
   writeFileSync
 } from "node:fs";
 import { dirname, extname, join } from "node:path";
@@ -148,13 +150,27 @@ const toPublishedUrl = (path) => {
   return `${PUBLISH_BASE}${normalized}`;
 };
 
+const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
+
+const fileHash = (filePath) =>
+  createHash("md5").update(readFileSync(filePath)).digest("hex");
+
 const findExistingBySlug = (slug) => {
-  for (const ext of [".jpg", ".jpeg", ".png", ".webp"]) {
+  for (const ext of IMAGE_EXTENSIONS) {
     const candidate = join(outputRoot, `${slug}${ext}`);
     if (existsSync(candidate)) return candidate;
   }
   return null;
 };
+
+const removeBySlugVariants = (slug) => {
+  for (const ext of IMAGE_EXTENSIONS) {
+    const candidate = join(outputRoot, `${slug}${ext}`);
+    if (existsSync(candidate)) unlinkSync(candidate);
+  }
+};
+
+const forceSync = process.argv.includes("--force");
 
 const extFromUrl = (url) => {
   try {
@@ -196,25 +212,43 @@ for (const product of products) {
     continue;
   }
 
-  const existingLocal = findExistingBySlug(product.slug);
-  if (existingLocal) {
-    const destFile = existingLocal.split(/[/\\]/).pop();
+  const syncFromBuffer = (buffer, destFile) => {
+    const destPath = join(outputRoot, destFile);
+    writeFileSync(destPath, buffer);
     productImageBySlug[product.slug] = toPublishedUrl(
       `/product-images/by-slug/${destFile}`
     );
-    continue;
-  }
+  };
+
+  const shouldReuseExisting = (expectedHash) => {
+    if (forceSync) return false;
+    const existingLocal = findExistingBySlug(product.slug);
+    if (!existingLocal) return false;
+    return fileHash(existingLocal) === expectedHash;
+  };
 
   if (mapping.external) {
     const ext = extFromUrl(mapping.external);
     const destFile = `${product.slug}${ext}`;
-    const destPath = join(outputRoot, destFile);
 
     try {
-      await downloadExternalImage(mapping.external, destPath);
-      productImageBySlug[product.slug] = toPublishedUrl(
-        `/product-images/by-slug/${destFile}`
-      );
+      const response = await fetch(mapping.external, {
+        headers: { "User-Agent": "HakanYemcilik-ImageSync/1.0" }
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const buffer = Buffer.from(await response.arrayBuffer());
+      const expectedHash = createHash("md5").update(buffer).digest("hex");
+
+      if (shouldReuseExisting(expectedHash)) {
+        const destFileExisting = findExistingBySlug(product.slug).split(/[/\\]/).pop();
+        productImageBySlug[product.slug] = toPublishedUrl(
+          `/product-images/by-slug/${destFileExisting}`
+        );
+        continue;
+      }
+
+      removeBySlugVariants(product.slug);
+      syncFromBuffer(buffer, destFile);
     } catch (downloadError) {
       errors.push(`${product.slug}: indirilemedi (${downloadError.message})`);
       productImageBySlug[product.slug] = toPublishedUrl(mapping.external);
@@ -230,10 +264,19 @@ for (const product of products) {
     continue;
   }
 
+  const expectedHash = fileHash(sourcePath);
+  if (shouldReuseExisting(expectedHash)) {
+    const destFileExisting = findExistingBySlug(product.slug).split(/[/\\]/).pop();
+    productImageBySlug[product.slug] = toPublishedUrl(
+      `/product-images/by-slug/${destFileExisting}`
+    );
+    continue;
+  }
+
   const ext = extname(fileName).toLowerCase();
   const destFile = `${product.slug}${ext}`;
-  const destPath = join(outputRoot, destFile);
-  copyFileSync(sourcePath, destPath);
+  removeBySlugVariants(product.slug);
+  copyFileSync(sourcePath, join(outputRoot, destFile));
   productImageBySlug[product.slug] = toPublishedUrl(
     `/product-images/by-slug/${destFile}`
   );

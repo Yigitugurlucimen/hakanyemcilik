@@ -12,7 +12,8 @@
     "setup:local": "node scripts/setup-local-env.mjs",
     "check:supabase": "node scripts/check-supabase.mjs",
     "export:catalog": "node scripts/export-products-from-supabase.mjs",
-    "sync:images": "node scripts/sync-product-images.mjs"
+    "sync:images": "node scripts/sync-product-images.mjs",
+    "sync:images:force": "node scripts/sync-product-images.mjs --force"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
