@@ -23,6 +23,8 @@ export const normalizeStock = (stock) => {
   return "unknown";
 };
 
+export const isOutOfStock = (product) => product?.stockStatus === "out_of_stock";
+
 export const rowToProduct = (row) => {
   if (!row) return null;
 

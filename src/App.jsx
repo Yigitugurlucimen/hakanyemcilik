@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import AdminLayout from "./components/admin/AdminLayout";
 import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";
+import CookieConsent from "./components/CookieConsent.jsx";
 import Footer from "./components/Footer";
 import FloatingWhatsAppButton from "./components/FloatingWhatsAppButton";
 import Header from "./components/Header";
@@ -20,10 +21,12 @@ import BlogListPage from "./pages/BlogListPage";
 import CampaignDetailPage from "./pages/CampaignDetailPage";
 import CampaignsPage from "./pages/CampaignsPage";
 import CartPage from "./pages/CartPage.jsx";
+import DistanceSalesPage from "./pages/DistanceSalesPage";
 import FaqPage from "./pages/FaqPage";
 import HomePage from "./pages/HomePage";
 import KvkkPage from "./pages/KvkkPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import PreInformationPage from "./pages/PreInformationPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import ShippingReturnsPage from "./pages/ShippingReturnsPage";
@@ -49,10 +52,13 @@ const StorefrontApp = () => (
         <Route path="/kvkk" element={<KvkkPage />} />
         <Route path="/gizlilik" element={<PrivacyPage />} />
         <Route path="/kullanim-kosullari" element={<TermsPage />} />
+        <Route path="/mesafeli-satis" element={<DistanceSalesPage />} />
+        <Route path="/on-bilgilendirme" element={<PreInformationPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </main>
     <FloatingWhatsAppButton />
+    <CookieConsent />
     <Footer />
   </div>
 );

@@ -69,6 +69,12 @@ const Footer = () => {
           <Link to="/kullanim-kosullari" className="hover:text-emeraldDark">
             Kullanım Koşulları
           </Link>
+          <Link to="/on-bilgilendirme" className="hover:text-emeraldDark">
+            Ön Bilgilendirme Formu
+          </Link>
+          <Link to="/mesafeli-satis" className="hover:text-emeraldDark">
+            Mesafeli Satış Sözleşmesi
+          </Link>
         </div>
       </div>
     </footer>

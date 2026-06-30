@@ -5,6 +5,7 @@ import PriceTag from "../components/PriceTag.jsx";
 import ProductCard from "../components/ProductCard";
 import Seo from "../components/Seo";
 import { useProducts } from "../context/ProductsContext";
+import { isOutOfStock } from "../lib/productTransforms.js";
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -89,7 +90,15 @@ const ProductDetailPage = () => {
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <PriceTag price={product.price} size="lg" />
-          <span className="rounded-full bg-emeraldDark/5 px-3 py-1 text-xs font-semibold uppercase text-emeraldDark">
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${
+              isOutOfStock(product)
+                ? "bg-red-100 text-red-700"
+                : product.stockStatus === "low_stock"
+                  ? "bg-amber-100 text-amber-800"
+                  : "bg-emeraldDark/5 text-emeraldDark"
+            }`}
+          >
             {product.stock}
           </span>
         </div>

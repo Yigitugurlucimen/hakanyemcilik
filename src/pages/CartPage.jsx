@@ -1,22 +1,13 @@
-import { FiMessageCircle, FiTrash2 } from "react-icons/fi";
+import { FiTrash2 } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import CheckoutForm from "../components/CheckoutForm.jsx";
 import PriceTag from "../components/PriceTag.jsx";
 import Seo from "../components/Seo.jsx";
 import { useCart } from "../context/CartContext.jsx";
-import { whatsappNumber } from "../data/products.js";
-import { buildCartWhatsAppMessage } from "../lib/cartWhatsApp.js";
 import { formatPrice, hasPrice } from "../lib/formatPrice.js";
 
 const CartPage = () => {
-  const { items, removeItem, updateQuantity, clearCart, subtotal, totalItems } =
-    useCart();
-
-  const checkoutUrl =
-    items.length > 0
-      ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-          buildCartWhatsAppMessage(items, subtotal)
-        )}`
-      : null;
+  const { items, removeItem, updateQuantity, clearCart, subtotal, totalItems } = useCart();
 
   if (items.length === 0) {
     return (
@@ -134,38 +125,7 @@ const CartPage = () => {
         ))}
       </div>
 
-      <aside className="mt-8 rounded-2xl border border-emeraldDark/10 bg-emeraldDark/5 p-6">
-        {subtotal != null ? (
-          <p className="text-sm text-gray-600">
-            Ara toplam (fiyat girilmiş ürünler)
-          </p>
-        ) : null}
-        <p className="mt-1 text-2xl font-black text-emeraldDark">
-          {subtotal != null ? formatPrice(subtotal) : "Fiyatlar panelden girilecek"}
-        </p>
-        <p className="mt-3 text-sm text-gray-600">
-          Ödeme ve kargo WhatsApp üzerinden netleştirilir. Kart ödemesi (Faz C) sonra
-          eklenecek.
-        </p>
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          <a
-            href={checkoutUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-pistachio px-6 py-3 text-sm font-bold uppercase tracking-wide text-white"
-          >
-            <FiMessageCircle size={16} />
-            WhatsApp ile Sipariş Ver
-          </a>
-          <Link
-            to="/#bilgi-bankasi"
-            className="inline-flex rounded-full border border-emeraldDark/20 px-6 py-3 text-sm font-semibold text-emeraldDark"
-          >
-            Alışverişe Devam
-          </Link>
-        </div>
-      </aside>
+      <CheckoutForm items={items} subtotal={subtotal} />
     </section>
   );
 };

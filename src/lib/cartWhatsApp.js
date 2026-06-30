@@ -1,7 +1,18 @@
 import { formatPrice, hasPrice } from "./formatPrice.js";
 
-export const buildCartWhatsAppMessage = (items, subtotal) => {
+export const buildCartWhatsAppMessage = (items, subtotal, customer = {}) => {
   const lines = ["Merhaba, Hakan Yemcilik üzerinden sipariş vermek istiyorum.", ""];
+
+  if (customer.name || customer.phone || customer.address) {
+    lines.push("--- Müşteri Bilgileri ---");
+    if (customer.name) lines.push(`Ad Soyad: ${customer.name}`);
+    if (customer.phone) lines.push(`Telefon: ${customer.phone}`);
+    if (customer.address) lines.push(`Adres: ${customer.address}`);
+    if (customer.note) lines.push(`Sipariş Notu: ${customer.note}`);
+    lines.push("");
+  }
+
+  lines.push("--- Ürünler ---");
 
   items.forEach((item, index) => {
     const linePrice = hasPrice(item.price)

@@ -5,6 +5,16 @@ import AddToCartButton from "./AddToCartButton.jsx";
 import PriceTag from "./PriceTag.jsx";
 import { whatsappNumber } from "../data/products.js";
 
+const stockBadgeClass = (stockStatus) => {
+  if (stockStatus === "out_of_stock") {
+    return "bg-red-100 text-red-700";
+  }
+  if (stockStatus === "low_stock") {
+    return "bg-amber-100 text-amber-800";
+  }
+  return "bg-white/95 text-emeraldDark";
+};
+
 const ProductCard = ({ product }) => {
   const requestUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
     `Merhaba, ${product.name} ürünü hakkında bilgi almak istiyorum.`
@@ -19,7 +29,9 @@ const ProductCard = ({ product }) => {
               {product.campaign}
             </span>
           ) : null}
-          <span className="rounded-full bg-white/95 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-emeraldDark">
+          <span
+            className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${stockBadgeClass(product.stockStatus)}`}
+          >
             {product.stock}
           </span>
         </div>

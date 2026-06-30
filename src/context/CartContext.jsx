@@ -7,6 +7,7 @@ import {
   useState
 } from "react";
 import { hasPrice } from "../lib/formatPrice.js";
+import { isOutOfStock } from "../lib/productTransforms.js";
 
 const CART_STORAGE_KEY = "hakan-yemcilik-cart";
 
@@ -39,7 +40,7 @@ export const CartProvider = ({ children }) => {
   }, [items]);
 
   const addItem = useCallback((product, quantity = 1) => {
-    if (!product?.slug) return;
+    if (!product?.slug || isOutOfStock(product)) return;
 
     setItems((current) => {
       const existing = current.find((item) => item.slug === product.slug);

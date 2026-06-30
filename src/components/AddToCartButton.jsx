@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FiShoppingCart } from "react-icons/fi";
 import { useCart } from "../context/CartContext.jsx";
+import { isOutOfStock } from "../lib/productTransforms.js";
 
 const AddToCartButton = ({
   product,
@@ -12,12 +13,28 @@ const AddToCartButton = ({
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
   const [qty, setQty] = useState(quantity);
+  const unavailable = isOutOfStock(product);
 
   const handleClick = () => {
+    if (unavailable) return;
     addItem(product, showQuantity ? qty : quantity);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 2000);
   };
+
+  if (unavailable) {
+    return (
+      <div className={className}>
+        <button
+          type="button"
+          disabled
+          className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-full bg-slate-200 px-5 py-2 text-sm font-semibold uppercase tracking-wide text-slate-500"
+        >
+          Stok Yok
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`}>
