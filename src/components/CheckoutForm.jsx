@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { FiMessageCircle } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext.jsx";
 import { whatsappNumber } from "../data/products.js";
 import { buildCartWhatsAppMessage } from "../lib/cartWhatsApp.js";
 import { formatPrice } from "../lib/formatPrice.js";
+import { createStoreOrder } from "../services/orderService.js";
 
 const emptyCustomer = {
   name: "",
@@ -13,9 +15,12 @@ const emptyCustomer = {
 };
 
 const CheckoutForm = ({ items, subtotal }) => {
+  const { clearCart } = useCart();
   const [customer, setCustomer] = useState(emptyCustomer);
   const [errors, setErrors] = useState({});
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [orderNumber, setOrderNumber] = useState(null);
 
   const updateField = (field) => (event) => {
     setCustomer((current) => ({ ...current, [field]: event.target.value }));
@@ -37,7 +42,7 @@ const CheckoutForm = ({ items, subtotal }) => {
     return nextErrors;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const nextErrors = validate();
     if (Object.keys(nextErrors).length) {
@@ -45,22 +50,81 @@ const CheckoutForm = ({ items, subtotal }) => {
       return;
     }
 
-    const message = buildCartWhatsAppMessage(items, subtotal, {
+    setSubmitting(true);
+    setErrors({});
+
+    const customerPayload = {
       name: customer.name.trim(),
       phone: customer.phone.trim(),
       address: customer.address.trim(),
       note: customer.note.trim()
-    });
+    };
+
+    let savedOrderNumber = null;
+
+    try {
+      const result = await createStoreOrder({
+        customer: customerPayload,
+        items,
+        subtotal
+      });
+      savedOrderNumber = result.orderNumber;
+      setOrderNumber(savedOrderNumber);
+    } catch (saveError) {
+      console.error(saveError);
+      setErrors({
+        submit:
+          "Sipariş kaydı oluşturulamadı; yine de WhatsApp ile devam edebilirsiniz. Sorun devam ederse bizi arayın."
+      });
+    }
+
+    const message = buildCartWhatsAppMessage(
+      items,
+      subtotal,
+      customerPayload,
+      savedOrderNumber
+    );
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank", "noopener,noreferrer");
+
+    if (savedOrderNumber) {
+      clearCart();
+    }
+
+    setSubmitting(false);
   };
+
+  if (orderNumber) {
+    return (
+      <aside className="mt-8 rounded-2xl border border-emeraldDark/10 bg-emeraldDark/5 p-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emeraldDark/70">
+          Sipariş alındı
+        </p>
+        <h2 className="mt-2 text-2xl font-black text-emeraldDark">
+          Sipariş No: {orderNumber}
+        </h2>
+        <p className="mt-3 text-sm text-gray-700">
+          Siparişiniz kaydedildi ve WhatsApp mesajı açıldı. Onay için ekibimiz sizinle
+          iletişime geçecektir.
+        </p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link
+            to="/#bilgi-bankasi"
+            className="inline-flex rounded-full bg-pistachio px-6 py-3 text-sm font-bold uppercase tracking-wide text-white"
+          >
+            Alışverişe Devam
+          </Link>
+        </div>
+      </aside>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-6">
       <div className="rounded-2xl border border-emeraldDark/10 bg-white p-6">
         <h2 className="text-lg font-bold text-emeraldDark">Teslimat Bilgileri</h2>
         <p className="mt-1 text-sm text-gray-600">
-          Bilgileriniz WhatsApp sipariş mesajına otomatik eklenir.
+          Bilgileriniz sisteme kaydedilir ve WhatsApp sipariş mesajına eklenir.
         </p>
 
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -165,14 +229,16 @@ const CheckoutForm = ({ items, subtotal }) => {
           </span>
         </label>
         {errors.terms ? <p className="mt-2 text-xs text-red-600">{errors.terms}</p> : null}
+        {errors.submit ? <p className="mt-2 text-sm text-amber-700">{errors.submit}</p> : null}
 
         <div className="mt-6 flex flex-wrap gap-3">
           <button
             type="submit"
-            className="inline-flex items-center gap-2 rounded-full bg-pistachio px-6 py-3 text-sm font-bold uppercase tracking-wide text-white"
+            disabled={submitting}
+            className="inline-flex items-center gap-2 rounded-full bg-pistachio px-6 py-3 text-sm font-bold uppercase tracking-wide text-white disabled:opacity-60"
           >
             <FiMessageCircle size={16} />
-            WhatsApp ile Sipariş Ver
+            {submitting ? "Kaydediliyor…" : "WhatsApp ile Sipariş Ver"}
           </button>
           <Link
             to="/#bilgi-bankasi"

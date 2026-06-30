@@ -6,10 +6,13 @@ import Footer from "./components/Footer";
 import FloatingWhatsAppButton from "./components/FloatingWhatsAppButton";
 import Header from "./components/Header";
 import ProductsLoadBanner from "./components/ProductsLoadBanner";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 import Seo from "./components/Seo";
 import { defaultSeoDescription } from "./lib/siteConfig.js";
 import AboutPage from "./pages/AboutPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
+import AdminOrderDetailPage from "./pages/admin/AdminOrderDetailPage";
+import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
 import AdminProductFormPage from "./pages/admin/AdminProductFormPage";
 import AdminBlogFormPage from "./pages/admin/AdminBlogFormPage";
 import AdminBlogsPage from "./pages/admin/AdminBlogsPage";
@@ -64,7 +67,9 @@ const StorefrontApp = () => (
 );
 
 const App = () => (
-  <Routes>
+  <>
+    <ScrollToTop />
+    <Routes>
     <Route path="/panel/login" element={<AdminLoginPage />} />
     <Route path="/panel" element={<ProtectedAdminRoute />}>
       <Route element={<AdminLayout />}>
@@ -77,10 +82,13 @@ const App = () => (
         <Route path="blog" element={<AdminBlogsPage />} />
         <Route path="blog/yeni" element={<AdminBlogFormPage />} />
         <Route path="blog/:slug" element={<AdminBlogFormPage />} />
+        <Route path="siparisler" element={<AdminOrdersPage />} />
+        <Route path="siparis/:id" element={<AdminOrderDetailPage />} />
       </Route>
     </Route>
     <Route path="/*" element={<StorefrontApp />} />
   </Routes>
+  </>
 );
 
 export default App;

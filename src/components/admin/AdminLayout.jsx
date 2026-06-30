@@ -19,7 +19,7 @@ const AdminLayout = () => {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emeraldDark/70">
               Hakan Yemcilik
             </p>
-            <h1 className="text-xl font-black text-emeraldDark">Ürün Yönetim Paneli</h1>
+            <h1 className="text-xl font-black text-emeraldDark">Yönetim Paneli</h1>
             {user?.email ? (
               <p className="mt-1 text-xs text-gray-500">{user.email}</p>
             ) : null}
@@ -28,6 +28,9 @@ const AdminLayout = () => {
           <nav className="flex flex-wrap items-center gap-2">
             <NavLink to="/panel" end className={navClass}>
               Ürünler
+            </NavLink>
+            <NavLink to="/panel/siparisler" className={navClass}>
+              Siparişler
             </NavLink>
             <NavLink to="/panel/kampanyalar" className={navClass}>
               Kampanyalar

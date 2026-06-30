@@ -4,6 +4,8 @@
 
 Supabase Dashboard → **SQL Editor** → **New query** → `full-setup.sql` içeriğini yapıştırıp **Run**.
 
+Sipariş sistemi için ayrıca `phase-c-orders.sql` dosyasını da bir kez çalıştırın (güncel sürüm `is_admin` fonksiyonunu içerir).
+
 ## 2. Admin hesabı
 
 **Authentication** → **Users** → kullanıcı oluşturun, ardından birini seçin:
