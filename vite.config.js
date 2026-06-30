@@ -6,9 +6,16 @@ const buildId =
   process.env.CF_PAGES_COMMIT_SHA?.slice(0, 7) ||
   new Date().toISOString().slice(0, 10);
 
-// Relative assets work on both hakanyemcilik.com (root) and github.io/hakanyemcilik/.
+/** Relative "./" breaks deep links (/panel/login). Use absolute base per host. */
+const resolveBase = () => {
+  if (process.env.VITE_BASE_PATH) return process.env.VITE_BASE_PATH;
+  if (process.env.CF_PAGES === "1") return "/";
+  if (process.env.GITHUB_ACTIONS === "true") return "/hakanyemcilik/";
+  return "/";
+};
+
 export default defineConfig({
-  base: "./",
+  base: resolveBase(),
   plugins: [react()],
   define: {
     __APP_BUILD_ID__: JSON.stringify(buildId)
