@@ -30,8 +30,8 @@ const HeroSlider = () => {
   const renderCta = (cta, variant) => {
     const base =
       variant === "primary"
-        ? "rounded-full bg-pistachio px-6 py-3 text-sm font-bold uppercase tracking-wide text-white shadow-lg shadow-pistachio/25 transition hover:brightness-105 hover:shadow-xl"
-        : "rounded-full border border-white/40 bg-white/10 px-6 py-3 text-sm font-bold uppercase tracking-wide text-white backdrop-blur-sm transition hover:bg-white/20";
+        ? "rounded-full bg-pistachio px-5 py-2.5 text-xs font-bold uppercase tracking-wide text-white shadow-lg shadow-pistachio/25 transition hover:brightness-105 sm:px-6 sm:py-3 sm:text-sm"
+        : "rounded-full border border-white/40 bg-white/10 px-5 py-2.5 text-xs font-bold uppercase tracking-wide text-white backdrop-blur-sm transition hover:bg-white/20 sm:px-6 sm:py-3 sm:text-sm";
 
     if (cta.to) {
       return (
@@ -54,7 +54,7 @@ const HeroSlider = () => {
 
   return (
     <section
-      className="relative overflow-hidden bg-emeraldDark"
+      className="relative w-full overflow-hidden bg-emeraldDark"
       aria-roledescription="carousel"
       aria-label="Öne çıkan kampanyalar"
       onMouseEnter={() => setPaused(true)}
@@ -73,16 +73,16 @@ const HeroSlider = () => {
         touchStartX.current = null;
       }}
     >
-      <div className="relative mx-auto min-h-[440px] w-full max-w-7xl md:min-h-[520px]">
+      <div className="relative mx-auto w-full min-h-[640px] md:min-h-[520px]">
         {heroSlides.map((slide, slideIndex) => {
           const active = slideIndex === index;
           return (
             <article
               key={slide.id}
-              className={`absolute inset-0 transition-all duration-700 ease-out ${
+              className={`absolute inset-0 w-full transition-opacity duration-700 ease-out ${
                 active
-                  ? "pointer-events-auto z-10 translate-x-0 opacity-100"
-                  : "pointer-events-none z-0 translate-x-4 opacity-0"
+                  ? "pointer-events-auto z-10 opacity-100"
+                  : "pointer-events-none z-0 opacity-0"
               }`}
               aria-hidden={!active}
             >
@@ -99,37 +99,37 @@ const HeroSlider = () => {
                 aria-hidden
               />
 
-              <div className="relative mx-auto flex h-full min-h-[440px] w-full max-w-6xl flex-col items-center gap-8 px-4 py-12 md:min-h-[520px] md:flex-row md:gap-12 md:px-6 md:py-16">
+              <div className="relative mx-auto flex h-full w-full max-w-6xl flex-col gap-5 px-4 pb-28 pt-8 md:flex-row md:items-center md:gap-12 md:px-6 md:pb-24 md:pt-16">
                 <div
-                  className={`flex flex-1 flex-col items-start gap-5 transition-all duration-700 delay-100 md:max-w-xl ${
-                    active ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+                  className={`order-2 flex w-full flex-1 flex-col items-start gap-4 md:order-1 md:max-w-xl md:gap-5 ${
+                    active ? "opacity-100" : "opacity-0"
                   }`}
                 >
-                  <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/90 backdrop-blur-sm">
+                  <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/90 backdrop-blur-sm sm:px-4 sm:py-1.5 sm:text-[11px] sm:tracking-[0.2em]">
                     {slide.eyebrow}
                   </span>
-                  <h1 className="text-3xl font-black leading-[1.1] tracking-tight text-white md:text-5xl lg:text-[3.25rem]">
+                  <h1 className="text-2xl font-black leading-tight tracking-tight text-white sm:text-3xl md:text-5xl lg:text-[3.25rem]">
                     {slide.title}
                   </h1>
-                  <p className="max-w-lg text-base leading-relaxed text-white/85 md:text-lg">
+                  <p className="max-w-lg text-sm leading-relaxed text-white/85 sm:text-base md:text-lg">
                     {slide.description}
                   </p>
-                  <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <div className="flex w-full flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
                     {renderCta(slide.primary, "primary")}
                     {renderCta(slide.secondary, "secondary")}
                   </div>
                 </div>
 
                 <div
-                  className={`relative flex w-full flex-1 items-center justify-center transition-all duration-700 delay-200 ${
-                    active ? "translate-y-0 scale-100 opacity-100" : "translate-y-8 scale-95 opacity-0"
+                  className={`order-1 flex w-full shrink-0 items-center justify-center md:order-2 md:flex-1 ${
+                    active ? "opacity-100" : "opacity-0"
                   }`}
                 >
                   <div
-                    className="absolute h-56 w-56 rounded-full bg-pistachio/20 blur-3xl md:h-72 md:w-72"
+                    className="absolute h-40 w-40 rounded-full bg-pistachio/20 blur-3xl md:h-72 md:w-72"
                     aria-hidden
                   />
-                  <div className="relative w-full max-w-sm overflow-hidden rounded-3xl border border-white/25 bg-white/5 shadow-2xl shadow-black/25 ring-1 ring-white/10 md:max-w-lg">
+                  <div className="relative w-full max-w-[280px] overflow-hidden rounded-2xl border border-white/25 bg-white/5 shadow-2xl shadow-black/25 ring-1 ring-white/10 sm:max-w-xs md:max-w-lg md:rounded-3xl">
                     <img
                       src={slide.image}
                       alt={slide.imageAlt}
@@ -138,6 +138,10 @@ const HeroSlider = () => {
                       }`}
                       loading={slideIndex === 0 ? "eager" : "lazy"}
                       fetchPriority={slideIndex === 0 ? "high" : "auto"}
+                      decoding="async"
+                      sizes="(max-width: 768px) 280px, 480px"
+                      width={1024}
+                      height={768}
                     />
                   </div>
                 </div>
@@ -147,8 +151,8 @@ const HeroSlider = () => {
         })}
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/25 to-transparent pb-6 pt-16">
-        <div className="pointer-events-auto mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 md:px-6">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/30 to-transparent pb-4 pt-12 md:pb-6 md:pt-16">
+        <div className="pointer-events-auto mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-4 sm:flex-row sm:justify-between md:px-6">
           <div className="flex items-center gap-2">
             <button
               type="button"

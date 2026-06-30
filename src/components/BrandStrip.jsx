@@ -15,7 +15,7 @@ const BrandStrip = () => {
     <section className="border-y border-emeraldDark/10 bg-white py-5">
       <div className="section-shell">
         <p className="section-eyebrow mb-4 text-center md:text-left">Güvenilir Markalar</p>
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden overscroll-x-contain">
           <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-white to-transparent" />
           <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-white to-transparent" />
           <div className="flex w-max animate-marquee items-center gap-3">

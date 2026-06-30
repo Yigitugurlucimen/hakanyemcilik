@@ -5,10 +5,15 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
-    @apply bg-slate-50 font-sans text-slate-800 antialiased;
+    @apply overflow-x-hidden bg-slate-50 font-sans text-slate-800 antialiased;
+  }
+
+  #root {
+    @apply w-full overflow-x-hidden;
   }
 }
 

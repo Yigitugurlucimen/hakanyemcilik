@@ -30,7 +30,7 @@ import ShippingReturnsPage from "./pages/ShippingReturnsPage";
 import TermsPage from "./pages/TermsPage";
 
 const StorefrontApp = () => (
-  <div className="min-h-screen bg-white">
+  <div className="min-h-screen w-full overflow-x-hidden bg-white">
     <Seo description={defaultSeoDescription} />
     <Header />
     <ProductsLoadBanner />
